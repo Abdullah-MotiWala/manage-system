@@ -5,7 +5,10 @@ import React, { useEffect } from "react";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 
 const Board = () => {
-  const getBoard = useBoardStore((state) => state.getBoard);
+  const [getBoard, board] = useBoardStore((state) => [
+    state.getBoard,
+    state.board,
+  ]);
 
   useEffect(() => {
     getBoard();
@@ -13,7 +16,7 @@ const Board = () => {
   return (
     <DragDropContext>
       <Droppable droppableId="board" direction="horizontal" type="column">
-        {(provided) => <div></div>}
+        {(provided) => <div>{Array.from(board.columns.entries()).map}</div>}
       </Droppable>
     </DragDropContext>
   );

@@ -24,5 +24,19 @@ export const getTodosGroupedByColumn = async () => {
         return acc
     }, new Map<TypedColumn, Column>())
 
-    return { columns }
+    const columnTypes: TypedColumn[] = ["todo", "inprogress", "done"]
+
+    for (let columnType of columnTypes) {
+        if (!columns.get(columnType)) {
+            columns.set(columnType, {
+                id: columnType,
+                todos: []
+            })
+        }
+    }
+
+    const sortedColumn = new Map(Array.from(columns.entries()).sort((a, b) => columnTypes.indexOf(a[0]) - columnTypes.indexOf(b[0])))
+    const board: Board = { columns: sortedColumn }
+
+    return board
 }
