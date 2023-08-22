@@ -37,7 +37,7 @@ const Header = () => {
       <div
         className={`absolute top-0 left-0 w-full h-96 bg-gradient-to-br from-pink-400 rounded-md filter blur-3xl -z-50 opacity-50 to-[${colors.primary}]`}
       />
-      <div className="flex flex-col md:flex-row items-center p-5 bg-gray-500/10 rounded-b-2xl">
+      <div className="flex flex-col md:flex-row items-center p-2 bg-gray-500/10 rounded-b-2xl">
         <Image
           src={
             "https://upload.wikimedia.org/wikipedia/en/thumb/8/8c/Trello_logo.svg/1280px-Trello_logo.svg.png"
@@ -48,7 +48,7 @@ const Header = () => {
           className="w-44 md:w-56 pb-10 md:pb-0 object-contain"
         />
         <div className="flex flex-1 space-x-2 w-full justify-end  items-center">
-          <form className="flex items-center space-x-5 bg-white rounded-md p-2 shadow-md flex-1 md:flex-initial">
+          <form className="flex items-center space-x-2 bg-white rounded-md p-1 shadow-md flex-1 md:flex-initial">
             <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
 
             <input
@@ -64,18 +64,18 @@ const Header = () => {
           <Avatar
             name="Abdullah MotiWala"
             round
-            size="50"
+            size="40"
             color={colors.primary}
           />
         </div>
       </div>
 
-      <div className="flex items-center py-2 justify-center px-5 md:py-5">
+      <div className="flex items-center py-2 justify-center px-5">
         <p
-          className={`flex items-center text-sm font-light p-5 shadow-xl rounded-xl w-fit bg-white italic max-w-3xl text-[${colors.primary}]`}
+          className={`flex items-center text-sm font-light p-2 shadow-xl rounded-xl w-fit bg-white italic max-w-3xl text-[${colors.primary}]`}
         >
           <UserCircleIcon
-            className={`h-10 w-10 mr-1 text-[${colors.primary}] ${
+            className={`h-8 w-8 mr-1 text-[${colors.primary}] ${
               loading && "animate-spin"
             }`}
           />

@@ -1,11 +1,12 @@
 "use client";
 
 import { useBoardStore } from "@/store/boardStore";
-import { BoardEntry, Column as ColumnType } from "@/types";
+import { BoardEntry, Column as ColumnType, TypedColumn } from "@/types";
 import React, { useEffect } from "react";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import Column from "./Column";
 import Modal from "./Modal";
+import { start } from "repl";
 
 const Board = () => {
   const [getBoard, board, setBoardState] = useBoardStore((state) => [
@@ -27,35 +28,36 @@ const Board = () => {
 
       const rearrangedColumns = new Map(entries);
       setBoardState({ ...board, columns: rearrangedColumns });
+      return;
     }
 
     const columns = board.columns;
-    const startColIndex = columns.get(source.droppableId);
-    const finishColIndex = columns.get(destination.droppableId);
+    const columKeys = Array.from(columns.keys());
+    const startColIndex = columKeys[Number(source.droppableId)] as TypedColumn;
+    const finishColIndex = columKeys[
+      Number(destination.droppableId)
+    ] as TypedColumn;
 
     if (!startColIndex || !finishColIndex) return;
 
     const startCol: ColumnType = {
-      id: startColIndex[0],
-      todos: startColIndex[1].index
+      id: startColIndex,
+      todos: columns.get(startColIndex).todos
     };
 
     const finishCol: ColumnType = {
-      id: finishColIndex[0],
-      todos: finishColIndex[1].index
+      id: finishColIndex,
+      todos: columns.get(finishColIndex).todos
     };
 
     if (!startCol || !finishCol) return;
-
-    const isSameColumn = source.index === destination.index;
-    if (isSameColumn) return;
 
     const newTodos = startCol.todos;
     const [todoMoved] = newTodos.splice(source.index, 1);
 
     const isSameColumnDragging = startCol.id === finishCol.id;
-
     if (isSameColumnDragging) {
+      
       newTodos.splice(destination.index, 0, todoMoved);
 
       const newCol = {

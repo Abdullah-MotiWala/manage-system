@@ -49,9 +49,9 @@ const TodoCard: FC<Props> = ({
       {...draggableProps}
       {...dragHandleProps}
       ref={innerRef}
-      className="bg-white rounded-md space-y-2 drop-shadow-md"
+      className="bg-white rounded-md drop-shadow-md my-2"
     >
-      <div className="flex justify-between items-center p-5">
+      <div className="flex justify-between items-center p-2">
         <p>{todo.title}</p>
         <button
           onClick={() => deleteTask(index, todo, id)}
