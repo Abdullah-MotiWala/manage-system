@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images:{
-        domains:["upload.wikimedia.org"]
-    }
-}
+  images: {
+    domains: ["cloud.appwrite.io", "upload.wikimedia.org"]
+  }
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

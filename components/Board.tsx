@@ -1,15 +1,17 @@
 "use client";
 
 import { useBoardStore } from "@/store/boardStore";
+import { BoardEntry, Column as ColumnType } from "@/types";
 import React, { useEffect } from "react";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import Column from "./Column";
+import Modal from "./Modal";
 
 const Board = () => {
   const [getBoard, board, setBoardState] = useBoardStore((state) => [
     state.getBoard,
     state.board,
-    state.setBoardState,
+    state.setBoardState
   ]);
 
   const handleOnDragEnd = (result: DropResult) => {
@@ -19,7 +21,7 @@ const Board = () => {
 
     const isColumnDragged = type === "column";
     if (isColumnDragged) {
-      const entries = Array.from(board.columns.entries());
+      const entries: BoardEntry = Array.from(board.columns.entries());
       const [removed] = entries.splice(source.index, 1);
       entries.splice(destination.index, 0, removed);
 
@@ -27,18 +29,20 @@ const Board = () => {
       setBoardState({ ...board, columns: rearrangedColumns });
     }
 
-    const columns = Array.from(board.columns);
-    const startColIndex = columns[Number(source.droppableId)];
-    const finishColIndex = columns[Number(destination.droppableId)];
+    const columns = board.columns;
+    const startColIndex = columns.get(source.droppableId);
+    const finishColIndex = columns.get(destination.droppableId);
 
-    const startCol: Column = {
+    if (!startColIndex || !finishColIndex) return;
+
+    const startCol: ColumnType = {
       id: startColIndex[0],
-      todos: startColIndex[1].index,
+      todos: startColIndex[1].index
     };
 
-    const finishCol: Column = {
+    const finishCol: ColumnType = {
       id: finishColIndex[0],
-      todos: finishColIndex[1].index,
+      todos: finishColIndex[1].index
     };
 
     if (!startCol || !finishCol) return;
@@ -56,7 +60,7 @@ const Board = () => {
 
       const newCol = {
         id: startCol.id,
-        todos: newTodos,
+        todos: newTodos
       };
 
       const newColumns = new Map(board.columns);
@@ -69,7 +73,7 @@ const Board = () => {
 
       const newCol = {
         id: finishCol.id,
-        todos: inDraggedTodos,
+        todos: inDraggedTodos
       };
 
       const newColumns = new Map(board.columns);
@@ -77,25 +81,30 @@ const Board = () => {
     }
   };
 
+  const columnEntries: BoardEntry = Array.from(board.columns.entries());
+
   useEffect(() => {
     getBoard();
   }, [getBoard]);
   return (
-    <DragDropContext onDragEnd={handleOnDragEnd}>
-      <Droppable droppableId="board" direction="horizontal" type="column">
-        {(provided) => (
-          <div
-            className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-7xl mx-auto"
-            {...provided.droppableProps}
-            ref={provided.innerRef}
-          >
-            {Array.from(board.columns.entries()).map(([id, column], index) => (
-              <Column key={id} id={id} todos={column.todos} index={index} />
-            ))}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <>
+      <DragDropContext onDragEnd={handleOnDragEnd}>
+        <Droppable droppableId="board" direction="horizontal" type="column">
+          {(provided) => (
+            <div
+              className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-7xl mx-auto"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {columnEntries.map(([id, column], index) => (
+                <Column key={id} id={id} todos={column.todos} index={index} />
+              ))}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+      <Modal />
+    </>
   );
 };
 

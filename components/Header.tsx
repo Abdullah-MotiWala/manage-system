@@ -1,14 +1,42 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MagnifyingGlassIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import Avatar from "react-avatar";
 import { colors } from "@/constants";
+import { useBoardStore } from "@/store/boardStore";
+import fetchSuggestion from "@/lib/fetchSuggestion";
 const Header = () => {
+  const [board, searchString, setSearchString] = useBoardStore((state) => [
+    state.board,
+    state.searchString,
+    state.setSearchString
+  ]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [suggestion, setSuggestion] = useState<string>("");
+
+  const fetchSuggestionFromApi = async () => {
+    try {
+      const suggestion = await fetchSuggestion(board);
+      setSuggestion(suggestion);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (board.columns) {
+      setLoading(true);
+      fetchSuggestionFromApi();
+    }
+  }, [board]);
+
   return (
     <header>
-      <div className={`absolute top-0 left-0 w-full h-96 bg-gradient-to-br from-pink-400 rounded-md filter blur-3xl -z-50 opacity-50 to-[${colors.primary}]`}/>
+      <div
+        className={`absolute top-0 left-0 w-full h-96 bg-gradient-to-br from-pink-400 rounded-md filter blur-3xl -z-50 opacity-50 to-[${colors.primary}]`}
+      />
       <div className="flex flex-col md:flex-row items-center p-5 bg-gray-500/10 rounded-b-2xl">
         <Image
           src={
@@ -27,6 +55,8 @@ const Header = () => {
               type="text"
               placeholder="Search"
               className="flex-1 outline-none p-2"
+              value={searchString}
+              onChange={(e) => setSearchString(e.target.value)}
             />
             <button hidden>Search</button>
           </form>
@@ -45,7 +75,9 @@ const Header = () => {
           className={`flex items-center text-sm font-light p-5 shadow-xl rounded-xl w-fit bg-white italic max-w-3xl text-[${colors.primary}]`}
         >
           <UserCircleIcon
-            className={`h-10 w-10 mr-1 text-[${colors.primary}]`}
+            className={`h-10 w-10 mr-1 text-[${colors.primary}] ${
+              loading && "animate-spin"
+            }`}
           />
           Chatgpt is summarising your tasks for day...
         </p>

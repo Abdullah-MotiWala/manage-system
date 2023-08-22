@@ -1,8 +1,12 @@
+import { type } from "os";
+
 interface Board {
     columns: Map<>
 }
 
 type TypedColumn = "todo" | "inprogress" | "done"
+
+type BoardEntry = [TypedColumn, Column][]
 
 interface Column {
     id: TypedColumn,
@@ -19,5 +23,5 @@ interface Todo {
 
 interface Image {
     bucketId: string;
-    field: string
+    fileId: string
 }
