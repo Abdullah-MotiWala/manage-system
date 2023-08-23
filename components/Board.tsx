@@ -1,19 +1,20 @@
 "use client";
 
 import { useBoardStore } from "@/store/boardStore";
-import { BoardEntry, Column as ColumnType, TypedColumn } from "@/types";
 import React, { useEffect } from "react";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import Column from "./Column";
 import Modal from "./Modal";
-import { start } from "repl";
 
 const Board = () => {
-  const [getBoard, board, setBoardState] = useBoardStore((state) => [
-    state.getBoard,
-    state.board,
-    state.setBoardState
-  ]);
+  const [getBoard, board, setBoardState, updateTodoInDb] = useBoardStore(
+    (state) => [
+      state.getBoard,
+      state.board,
+      state.setBoardState,
+      state.updateTodoInDb
+    ]
+  );
 
   const handleOnDragEnd = (result: DropResult) => {
     const { destination, source, type } = result;
@@ -28,7 +29,6 @@ const Board = () => {
 
       const rearrangedColumns = new Map(entries);
       setBoardState({ ...board, columns: rearrangedColumns });
-      return;
     }
 
     const columns = board.columns;
@@ -40,12 +40,12 @@ const Board = () => {
 
     if (!startColIndex || !finishColIndex) return;
 
-    const startCol: ColumnType = {
+    const startCol: Column = {
       id: startColIndex,
       todos: columns.get(startColIndex).todos
     };
 
-    const finishCol: ColumnType = {
+    const finishCol: Column = {
       id: finishColIndex,
       todos: columns.get(finishColIndex).todos
     };
@@ -57,7 +57,6 @@ const Board = () => {
 
     const isSameColumnDragging = startCol.id === finishCol.id;
     if (isSameColumnDragging) {
-      
       newTodos.splice(destination.index, 0, todoMoved);
 
       const newCol = {
@@ -67,19 +66,27 @@ const Board = () => {
 
       const newColumns = new Map(board.columns);
       newColumns.set(startCol.id, newCol);
-
       setBoardState({ ...board, columns: newColumns });
     } else {
-      const inDraggedTodos = finishCol.todos;
-      inDraggedTodos.splice(destination.index, 0, todoMoved);
+      const finishTodos = Array.from(finishCol.todos);
+      finishTodos.splice(destination.index, 0, todoMoved);
+      const newColumns = new Map(board.columns);
 
       const newCol = {
-        id: finishCol.id,
-        todos: inDraggedTodos
+        id: startCol.id,
+        todos: newTodos
       };
 
-      const newColumns = new Map(board.columns);
-      newColumns.set(finishCol.id, newCol);
+      const newFinishCol = {
+        id: finishCol.id,
+        todos: finishTodos
+      };
+
+      newColumns.set(startCol.id, newCol);
+      newColumns.set(finishCol.id, newFinishCol);
+
+      updateTodoInDb(todoMoved, finishCol.id);
+      setBoardState({ ...board, columns: newColumns });
     }
   };
 

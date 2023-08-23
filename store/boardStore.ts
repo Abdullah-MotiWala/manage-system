@@ -1,7 +1,6 @@
 import { ID, databases, storage } from '@/appwrite'
 import { getTodosGroupedByColumn } from '@/lib/getTodosGroupedByColumn'
 import uploadImage from '@/lib/uploadImage';
-import { Board, Column, Image, Todo, TypedColumn } from '@/types'
 import { create } from 'zustand'
 
 interface BoardState {
@@ -54,8 +53,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         set({ board })
     },
     updateTodoInDb: async (todo, columnId) => {
-        const dbId = process.env.NEXT_PUBLIC_DATABASE_ID as string
-        const collectionId = process.env.NEXT_PUBLIC_TODOS_COLLECTION_ID as string
+        const dbId = process.env.NEXT_PUBLIC_DATABASE_ID!
+        const collectionId = process.env.NEXT_PUBLIC_TODOS_COLLECTION_ID!
         await databases.updateDocument(dbId, collectionId, todo.$id, { title: todo.title, status: columnId })
     },
     deleteTask: async (taskIndex: number, todo: Todo, id: TypedColumn) => {
@@ -105,7 +104,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
                 status: columnId,
                 ...(file && { image: file })
             }
-            const column = newColumns.get(columnId)
+            const column = newColumns.get(columnId) as Column | undefined;
             if (!column) {
                 newColumns.set(columnId, {
                     id: columnId,

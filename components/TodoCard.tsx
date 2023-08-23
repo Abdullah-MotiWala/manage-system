@@ -2,9 +2,7 @@
 
 import getUrl from "@/lib/getUrl";
 import { useBoardStore } from "@/store/boardStore";
-import { Todo, TypedColumn } from "@/types";
 import { XCircleIcon } from "@heroicons/react/24/solid";
-import { DiscoveryModule } from "@nestjs/core";
 import Image from "next/image";
 import React, { FC, useEffect, useState } from "react";
 import {

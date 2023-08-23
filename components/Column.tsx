@@ -2,7 +2,6 @@ import { PlusCircleIcon } from "@heroicons/react/24/solid";
 import React, { FC } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import TodoCard from "./TodoCard";
-import { Todo, TypedColumn } from "@/types";
 import { useBoardStore } from "@/store/boardStore";
 import { useModalStore } from "@/store/modalStore";
 

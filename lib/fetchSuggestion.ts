@@ -1,4 +1,3 @@
-import { Board } from "@/types";
 import formatTodoForAi from "./formatTodoForAi";
 
 const fetchSuggestion = async (board: Board) => {

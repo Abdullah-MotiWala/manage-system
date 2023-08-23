@@ -1,5 +1,3 @@
-import { Board, TypedColumn, Todo, Column } from "@/types"; // Replace with your actual import paths
-
 const formatTodoForAi = (board: Board) => {
     const todos: [TypedColumn, Column][] = Array.from(board.columns.entries());
 
